@@ -1,0 +1,10 @@
+{ 
+ "agente":"ag002", 
+ "fechahoraUTC":"2020-10-03T17:00:00", 
+ "lecturas":[ 
+{ 
+"sensor":"sid001", 
+"lectura":17.9 
+}
+ ] 
+} 
