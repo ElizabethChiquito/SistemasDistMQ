@@ -1,0 +1,114 @@
+#Librerías
+import cv2 # librería de visión por computadora
+import matplotlib.pyplot as plt # librería para graficar
+import numpy as np
+import os
+
+image = cv2.imread('ejemplo.jpg', cv2.IMREAD_COLOR)
+image_gs = cv2.imread('ejemplo.jpg', cv2.IMREAD_GRAYSCALE)
+
+cv2.imshow('imageColor', image)
+cv2.imshow('imageGrayScale', image_gs)
+cv2.waitKey(0)
+
+
+plt.imshow(image)
+plt.show()
+
+image2 = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+plt.imshow(image2)
+plt.show()
+
+print ("dimensión imagen original", image.shape)
+print ("dimensión imagen escala de grises", image_gs.shape)
+
+img_r = image[:,:,0] #get red channel
+img_g = image[:,:,1] #get green channel
+img_b = image[:,:,2] #get blue channel
+
+plt.subplot('131')
+plt.imshow(img_r,cmap='gray')
+plt.subplot('132')
+plt.imshow(img_g,cmap='gray')
+plt.subplot('133')
+plt.imshow(img_b,cmap='gray')
+plt.show()
+
+
+################# ejercicio 1 ###################
+
+example1 = cv2.imread("ejercicio1.jpg", cv2.IMREAD_GRAYSCALE)
+cv2.imshow('ejercicio 1', example1)
+example_neg = example1
+rows,cols = example1.shape
+print(rows,cols)
+for i in range(rows):
+  for j in range(cols):
+     example_neg[i,j]= 255-example1[i, j]
+cv2.imshow('negativo ej1', example_neg)
+
+cv2.waitKey(0)
+
+################# ejercicio 2 ###################
+
+example2 = cv2.imread("ejercicio2.jpg")
+cv2.imshow('ejercicio 2', example2)
+example_inv = example2
+rows,cols, channels = example2.shape
+print(rows,cols,channels)
+for i in range(rows):
+  for j in range(cols):
+     example_inv[i,j,0]= 255-example2[i, j, 0]
+     example_inv[i,j,1]= 255-example2[i, j, 1]
+     example_inv[i,j,2]= 255-example2[i, j, 2]
+cv2.imshow('negativo ej2', example_inv)
+
+cv2.waitKey(0)
+
+
+################  video capture ################
+
+#cap = cv2.VideoCapture(0) #Para capturar señal de cámara por default
+cap = cv2.VideoCapture("video01.mp4")
+contador=0
+
+#crea carpeta de resultados para almacenar dataset
+path = os.getcwd() + "/resultados"
+try:  
+    os.mkdir(path)
+except OSError:  
+    print ("La creacion del directorio %s falló" % path)
+
+#comienza captura de video
+while(True):
+    # Capture frame-by-frame
+    ret, frame = cap.read()
+    # Our operations on the frame come here
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    ret, ts = cv2.threshold(gray,100,255,cv2.THRESH_BINARY)
+
+    #Muestra los frames resultantes
+    cv2.imshow('frame', frame)
+    cv2.imshow('frame2', ts)
+
+    #guardar frames del video
+    extension = ".jpeg"
+    nombre_img_color = "c_image" + str(contador) + extension
+    nombre_img_ts = "t_image" + str(contador) + extension
+
+    k = cv2.waitKey(25) & 0xFF
+
+    if k==27 : #si presiona ESC
+        break
+    elif k==ord('s') : #si presiona 's'
+    	cv2.imwrite( path + "/" + nombre_img_color, frame )
+    	cv2.imwrite( path + "/" + nombre_img_ts, ts )
+    	contador+=1
+    
+
+# When everything done, release the capture
+cap.release()
+cv2.destroyAllWindows()
+
+#img_path = os.path.join(os.path.dirname(__file__), 'images', 'main_image.jpg')
+#image = cv2.imread(img_path)
